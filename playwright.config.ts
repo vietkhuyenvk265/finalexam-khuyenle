@@ -42,13 +42,5 @@ export default defineConfig({
         channel: 'chrome'
       }
     },
-    {
-      name: 'firefox',
-      use: { browserName: 'firefox' },
-    },
-    {
-      name: 'webkit',
-      use: { browserName: 'webkit' },
-    },
   ],
 });

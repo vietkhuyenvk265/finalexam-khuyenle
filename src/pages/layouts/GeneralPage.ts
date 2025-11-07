@@ -12,5 +12,6 @@ export class GeneralPage extends AbstractPage {
 
   public async goToCart() {
     await this.cartLink.click();
+    await this.cartLink.click();
   }
 }
