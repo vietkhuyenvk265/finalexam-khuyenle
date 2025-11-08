@@ -1,4 +1,5 @@
 import { test, expect } from '../fixtures/base-fixture';
+import { UtilsHelper } from '../helpers/utils-helper';  
 
 test('user can login and logout', async ({ homePage, shopPage, cartPage, checkOutPage }) => {
 
@@ -17,8 +18,10 @@ test('user can login and logout', async ({ homePage, shopPage, cartPage, checkOu
 
   await checkOutPage.placeAnOrder(billingInfoPath,'Direct Bank Transfer');
 
-
-
+  const today = UtilsHelper.getCurrentDate();
+  const orderDate = await checkOutPage.getOrderDate();
+  console.log(`Order date: ${orderDate}, Today's date: ${today}`);
+  expect(orderDate).toContain(today);
   
 
 

@@ -10,13 +10,17 @@ export class CheckOutPage extends GeneralPage {
         companyName: this.page.getByRole('textbox', { name: 'Company Name' }),
         emailAddress: this.page.getByRole('textbox', { name: 'Email Address *' }),
         phoneNumber: this.page.getByRole('textbox', { name: 'Phone *' }),
-        countryCbb: this.page.locator('//select[@id="billing_country"]'),
+        /*this does not work with selectOption - Wordaround applied
+        countryCbb: this.page.locator('//select[@name="billing_country"]'), */
+        countryField: this.page.locator('//div[@id="s2id_billing_country"]'),
         streetAddress: this.page.getByRole('textbox', { name: 'Address *', exact: true }),
         postCode: this.page.getByRole('textbox', { name: 'Postcode / ZIP' }),
         city: this.page.getByRole('textbox', { name: 'Town / City *' }),
     }
     private paymentSelection = (payment: string) => this.page.locator(`//input[@type="radio"]/following-sibling::label[normalize-space(text())="${payment}"]`);
     private readonly placeOrderButton = this.page.getByRole('button', { name: 'Place order' });
+    private readonly countrySearchInput = this.page.locator('//label[.="Country *"]/following-sibling::input[contains(@id,"search")]');
+    private billingDate = this.page.locator('//li[@class="date"]');
 
     public async fillBillingDetails(jsonPath: string) {
         logger.info(`Reading billing info from JSON: ${jsonPath}`);
@@ -26,35 +30,28 @@ export class CheckOutPage extends GeneralPage {
         const fieldMap: Record<string, Locator> = {
             firstName: this.billingForm.firstName,
             lastName: this.billingForm.lastName,
-            company: this.billingForm.companyName,
-            email: this.billingForm.emailAddress,
-            phone: this.billingForm.phoneNumber,
-            country: this.billingForm.countryCbb,
-            address: this.billingForm.streetAddress,
-            zipcode: this.billingForm.postCode,
+            companyName: this.billingForm.companyName,
+            emailAddress: this.billingForm.emailAddress,
+            phoneNumber: this.billingForm.phoneNumber,
+            country: this.billingForm.countryField,
+            streetAddress: this.billingForm.streetAddress,
+            postCode: this.billingForm.postCode,
             city: this.billingForm.city,
         };
 
-        // for (const [key, field] of Object.entries(fieldMap)) {
-        //     const value = data[key];
-        //     if (!value) continue;
+        for (const [key, field] of Object.entries(fieldMap)) {
+            const value = data[key];
+            if (!value) continue;
 
-        //     if (key === 'country') {
-        //         await field.click();
-        //         await field.selectOption(value);
-        //     } else {
-        //         await field.fill(value);
-        //     }
-        // }
-        if (data.firstName) await this.billingForm.firstName.fill(data.firstName);
-        if (data.lastName) await this.billingForm.lastName.fill(data.lastName);
-        if (data.company) await this.billingForm.companyName.fill(data.company);
-        if (data.email) await this.billingForm.emailAddress.fill(data.email);
-        if (data.phone) await this.billingForm.phoneNumber.fill(data.phone);
-        // if (data.country) await this.billingForm.countryCbb.selectOption(data.country);
-        if (data.address) await this.billingForm.streetAddress.fill(data.address);
-        if (data.zipcode) await this.billingForm.postCode.fill(data.zipcode);
-        if (data.city) await this.billingForm.city.fill(data.city);
+            if (key === 'country') {
+                await field.click();
+                await this.countrySearchInput.fill(value);
+                await this.countrySearchInput.press('Enter');
+
+            } else {
+                await field.fill(value);
+            }
+        }
 
         logger.info('Billing details filled successfully.');
     }
@@ -73,9 +70,10 @@ export class CheckOutPage extends GeneralPage {
         await this.fillBillingDetails(dataPath);
         await this.selectPaymentMethod(paymentMethod);
         await this.clickPlaceOrder();
-
     }
 
-
+    public async getOrderDate(): Promise<string> {
+        return await this.billingDate.textContent() ?? '';
+    }
 
 }
