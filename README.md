@@ -1,6 +1,6 @@
 # PLAYWRIGHT - KHUYEN LE
 
-This repository contains a Playwright framework setup for automated testing. The base URL is: [text](playwright.config.ts)
+This repository contains a Playwright framework setup for automated testing. The base URL is: [https://practice.automationtesting.in]
 
 The framework is structured as follows:
 
