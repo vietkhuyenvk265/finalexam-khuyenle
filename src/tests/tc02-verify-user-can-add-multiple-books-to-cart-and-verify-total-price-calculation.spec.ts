@@ -1,17 +1,16 @@
 import { test, expect } from '../fixtures/base-fixture';
 import { CartVerify } from '../verifies/cart-verify';
+import { product1, product2 } from '../data/book-info';
 
 test('verify user can ddd multiple books to cart and verify total price calculation', async ({ homePage, shopPage, cartPage }) => {
 
-  const product1 = ['Functional Programming in JS', '250.00', '1'];
-  const product2 = ['HTML5 WebApp Develpment', '180.00', '1'];
 
   //Step 1.	Navigate to the "Shop" page
   await homePage.openAUT();
   await homePage.selectHeaderMenu('Shop');
 
   //Step 2.	Add two random books (each from a different category) by clicking "ADD TO BASKET" button for each
-  await shopPage.addProductToBasket([product1[0], product2[0]]);
+  await shopPage.addProductToBasket([product1.name, product2.name]);
 
   //Step 3.	Verify that the cart icon displays the correct number of items (2).
   expect(await shopPage.isCartQuantityEqualTo('2 items')).toBeTruthy();
@@ -25,8 +24,8 @@ test('verify user can ddd multiple books to cart and verify total price calculat
   //Step 6.	Verify that all added books appear in the cart with correct details (Product Name, Unit Price, Quantity).
   const cartVerify = new CartVerify(cartPage);
 
-  cartVerify.verifyProductInCart(product1[0], product1[1], product1[2]);
-  cartVerify.verifyProductInCart(product2[0], product2[1], product2[2]);
+  cartVerify.verifyProductInCart(product1.name, product1.price, product1.quantity);
+  cartVerify.verifyProductInCart(product2.name, product2.price, product2.quantity);
 
   //Step 7.	Verify price calculations:
   //VP1. Subtotal = Sum of all item prices × quantity.
