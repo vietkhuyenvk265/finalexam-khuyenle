@@ -1,3 +1,4 @@
+import { Locator } from '@playwright/test';
 import { AbstractPage } from './AbstractPage';
 
 export class GeneralPage extends AbstractPage {
@@ -12,6 +13,24 @@ export class GeneralPage extends AbstractPage {
 
   public async goToCart() {
     await this.cartLink.click();
-    await this.cartLink.click();
+    await this.page.waitForLoadState('load');
+  }
+
+  public async isCartQuantityEqualTo(expectedQuantity: string): Promise<boolean> {
+    await this.cartQuantityLabel.waitFor({ state: 'visible', timeout: 5000 });
+    //Sometimes, the cart still not updated immediately after adding products, so we need to wait a bit
+    await this.page.waitForTimeout(1000);
+    const actualQuantity = await this.cartQuantityLabel.textContent();
+    return actualQuantity?.trim() === expectedQuantity;
+  }
+
+  public async isCartSubTotalEqualTo(expectedTotal: string): Promise<boolean> {
+    await this.cartTotalLabel.waitFor({ state: 'visible', timeout: 5000 });
+    await this.page.waitForTimeout(1000);
+    const actualTotal = await this.cartTotalLabel.textContent();
+    const normalizedActualTotal = actualTotal?.trim().replace(/[^0-9.-]+/g, ''); 
+    const normalizedExpectedTotal = expectedTotal.replace(/[^0-9.-]+/g, '');
+    console.log(`Actual Total: ${normalizedActualTotal}, Expected Total: ${normalizedExpectedTotal}`);
+    return normalizedActualTotal?.includes(normalizedExpectedTotal) ?? false;
   }
 }

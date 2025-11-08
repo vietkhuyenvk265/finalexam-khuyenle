@@ -13,13 +13,8 @@ export abstract class AbstractPage {
         await this.page.goto("/");
     }
 
-    async navigateTo(url: string) {
-        logger.info(`Navigating to URL: ${url}`);
-        await this.page.goto(url);
-    }
-
-    async assertUrlContains(path: string) {
-        logger.verify(`URL contains: ${path}`);
-        await expect(this.page).toHaveURL(new RegExp(path));
+    async assertUrlContains(query: string) {
+        await expect(this.page).toHaveURL(new RegExp(`${query}(?:[&?][^#]*)?$`));
+        logger.verify(`URL contains: ${query}`);
     }
 }

@@ -1,6 +1,6 @@
 # PLAYWRIGHT - KHUYEN LE
 
-This repository contains a Playwright framework setup for automated testing. The base URL is: [text](playwright.config.ts)
+This repository contains a Playwright framework setup for automated testing. The base URL is: [https://practice.automationtesting.in]
 
 The framework is structured as follows:
 
@@ -16,6 +16,7 @@ FINALEXAM_PLAYWRIGHT<br>
 &nbsp; &nbsp; &nbsp; &nbsp;├── helpers<br>
 &nbsp; &nbsp; &nbsp; &nbsp;├── pages<br>
 &nbsp; &nbsp; &nbsp; &nbsp;├── tests<br>
+&nbsp; &nbsp; &nbsp; &nbsp;├── verifies<br>
 ├─ test-results<br>
 │ .gitignore<br>
 │ package-lock.json<br>
@@ -42,6 +43,7 @@ FINALEXAM_PLAYWRIGHT<br>
 - `src/helpers`: Contains utility functions and custom helpers that used across multiple tests
 - `src/pages`: POM pattern — each file represents a single page of the AUT
 - `src/tests`: Contains all Playwright test specifications
+- `src/tests`: Contains complex verification flow of each page. Such as: cart-verify
 
 ### `test-results`
 

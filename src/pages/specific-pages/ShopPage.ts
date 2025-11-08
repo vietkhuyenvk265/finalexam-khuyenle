@@ -2,19 +2,40 @@ import { GeneralPage } from '../layouts/GeneralPage';
 import { logger } from '../../helpers/logger-helper';
 
 export class ShopPage extends GeneralPage {
-    private productLocator = (product: string) => this.page.locator(`//a[h3='${product}']`);
     private addProductButton = (product: string) => this.page.locator(`//a[h3='${product}']/following-sibling::a[.='Add to basket']`);
+    private filterCategory = (category: string) => this.page.locator(`//ul[@class="product-categories"]//a[.="${category}"]`);
     private readonly sortByDropdown = this.page.locator('select[name="orderby"]');
+    private readonly productNames = this.page.locator('//h3');
 
     public async addProductToBasket(product: string[]) {
         for (const item of product) {
+            await this.page.waitForLoadState('load');
             await this.addProductButton(item).click();
             logger.info(`Product ${item} is added to basket`);
         }
     }
 
+    public async selectFilterCategory(category: string) {
+        await this.filterCategory(category).click();
+        logger.info(`Filter applied for category: ${category}`);
+
+    }
+
     public async sortProductsBy(option: string) {
         await this.sortByDropdown.selectOption({ label: option });
+        logger.info(`Products sorted by: ${option}`);
+    }
+
+    public async getAllProductNames(): Promise<string[]> {
+        await this.page.waitForLoadState('load');
+        const productNamesList = await this.productNames.allTextContents()
+        return productNamesList;
+    }
+
+    public async areAllProductsContainedKeyword(keyword: string): Promise<boolean> {
+        const productNamesList = await this.getAllProductNames();
+        logger.info(`List of product names: ${productNamesList.join(', ')}`);
+        return productNamesList.every(name => name.includes(keyword));
     }
 
 }
