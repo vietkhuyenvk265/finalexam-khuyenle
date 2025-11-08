@@ -6,6 +6,7 @@ export class ShopPage extends GeneralPage {
     private filterCategory = (category: string) => this.page.locator(`//ul[@class="product-categories"]//a[.="${category}"]`);
     private readonly sortByDropdown = this.page.locator('select[name="orderby"]');
     private readonly productNames = this.page.locator('//h3');
+    private readonly productPrices = this.page.locator('//span[@class="woocommerce-Price-amount amount"]');
 
     public async addProductToBasket(product: string[]) {
         for (const item of product) {
@@ -36,6 +37,16 @@ export class ShopPage extends GeneralPage {
         const productNamesList = await this.getAllProductNames();
         logger.info(`List of product names: ${productNamesList.join(', ')}`);
         return productNamesList.every(name => name.includes(keyword));
+    }
+
+    public async getAllProductPrices(): Promise<number[]> {
+        await this.page.waitForLoadState('load');
+        const priceTexts = await this.productPrices.allTextContents();  
+        const prices = priceTexts.map(text => {
+            const numericText = text.replace(/[^0-9.-]+/g, ''); 
+            return parseFloat(numericText);
+        });
+        return prices;
     }
 
 }

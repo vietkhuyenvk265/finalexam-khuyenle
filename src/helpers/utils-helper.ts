@@ -1,12 +1,12 @@
 export const UtilsHelper = {
 
-    getCurrentDate(): string {
-      const today = new Date();
-      return today.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    },
-
+  isSortedHighToLow(data: number[]): boolean {
+    for (let i = 1; i < data.length; i++) {
+      if (data[i] > data[i - 1]) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
 }

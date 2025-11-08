@@ -1,4 +1,5 @@
 import { test, expect } from '../fixtures/base-fixture';
+import { UtilsHelper } from '../helpers/utils-helper';
 
 test('verify book filtering by category and price sorting_high to low',
   async ({ homePage, shopPage}) => {
@@ -19,6 +20,8 @@ test('verify book filtering by category and price sorting_high to low',
     expect(await shopPage.assertUrlContains('orderby=price-desc'));
 
       //VP2: The displayed book prices are sorted in descending order (highest to lowest)
+    const prices = await shopPage.getAllProductPrices();
+    expect(UtilsHelper.isSortedHighToLow(prices)).toBeTruthy();
 
       //VP3: All displayed books belong to the "HTML" category (titles contain "HTML")
     expect(await shopPage.areAllProductsContainedKeyword(filterCategory)).toBeTruthy();

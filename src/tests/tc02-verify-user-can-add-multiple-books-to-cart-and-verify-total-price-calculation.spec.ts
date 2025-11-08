@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/base-fixture'; 
+import { test, expect } from '../fixtures/base-fixture';
 import { CartVerify } from '../verifies/cart-verify';
 
 test('verify user can ddd multiple books to cart and verify total price calculation', async ({ homePage, shopPage, cartPage }) => {
@@ -29,18 +29,15 @@ test('verify user can ddd multiple books to cart and verify total price calculat
   cartVerify.verifyProductInCart(product2[0], product2[1], product2[2]);
 
   //Step 7.	Verify price calculations:
-    //VP1. Subtotal = Sum of all item prices × quantity.
+  //VP1. Subtotal = Sum of all item prices × quantity.
   expect(await cartPage.getCartSubTotal()).toBe('₹430.00');
-    
-    //VP2. Tax is displayed (if applicable).  
-  
-  expect(await cartPage.getCartTax()).toBe('₹8.60');
-  
-    //VP3. Total = Subtotal + Tax (if any).
-  expect(await cartPage.getCartTotal()).toBe('₹438.60');
-  
 
-  
+  //VP2. Tax is displayed (if applicable).  
+
+  expect(await cartPage.getCartTax()).toBe('₹8.60');
+
+  //VP3. Total = Subtotal + Tax (if any).
+  expect(await cartPage.getCartTotal()).toBe('₹438.60');
 
 
 });
