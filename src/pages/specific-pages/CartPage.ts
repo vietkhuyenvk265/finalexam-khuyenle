@@ -3,7 +3,7 @@ import { logger } from '../../helpers/logger-helper';
 
 export class CartPage extends GeneralPage {
     private readonly checkOutButton = this.page.locator('//a[contains(@class,"checkout-button")]');
-    protected productLink = (product: string) => this.page.locator(`//td[@class="product-name"]/a[.='${product}']`);
+    private productLink = (product: string) => this.page.locator(`//td[@class="product-name"]/a[.='${product}']`);
 
     
     public async isProductExisted(product: string): Promise<boolean> {
