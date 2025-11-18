@@ -24,13 +24,12 @@ export class GeneralPage extends AbstractPage {
     return actualQuantity?.trim() === expectedQuantity;
   }
 
-  public async isCartSubTotalEqualTo(expectedTotal: string): Promise<boolean> {
+  public async isCartSubTotalEqualTo(expectedTotal: number): Promise<boolean> {
     await this.cartTotalLabel.waitFor({ state: 'visible', timeout: 5000 });
     await this.page.waitForTimeout(1000);
     const actualTotal = await this.cartTotalLabel.textContent();
-    const normalizedActualTotal = actualTotal?.trim().replace(/[^0-9.-]+/g, ''); 
-    const normalizedExpectedTotal = expectedTotal.replace(/[^0-9.-]+/g, '');
-    console.log(`Actual Total: ${normalizedActualTotal}, Expected Total: ${normalizedExpectedTotal}`);
-    return normalizedActualTotal?.includes(normalizedExpectedTotal) ?? false;
+    const numericText = actualTotal?.replace(/[^0-9.-]+/g, '');
+    const actualTotalNumber = numericText ? parseFloat(numericText) : 0;
+    return actualTotalNumber === expectedTotal;
   }
 }

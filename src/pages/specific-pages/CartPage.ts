@@ -21,15 +21,21 @@ export class CartPage extends GeneralPage {
         return await this.productQuantity(product).inputValue() ?? '';
     }   
 
-    public async getCartSubTotal(): Promise<string> {
-        return await this.cartSubtotal.textContent() ?? '';
+    public async getCartSubTotal(): Promise<number> {
+        const cartSubtotalText = await this.cartSubtotal.textContent() ?? '';
+        const numericText = cartSubtotalText.replace(/[^0-9.-]+/g, ''); 
+        return parseFloat(numericText);
     }
 
-    public async getCartTax(): Promise<string> {
-        return await this.cartTax.textContent() ?? '';
+    public async getCartTax(): Promise<number> {
+        const cartTaxText = await this.cartTax.textContent() ?? '';
+        const numericText = cartTaxText.replace(/[^0-9.-]+/g, ''); 
+        return parseFloat(numericText);
     }
 
-    public async getCartTotal(): Promise<string> {
-        return await this.cartTotal.textContent() ?? '';
+    public async getCartTotal(): Promise<number> {
+        const cartTotalText = await this.cartTotal.textContent() ?? '';
+        const numericText = cartTotalText.replace(/[^0-9.-]+/g, ''); 
+        return parseFloat(numericText);
     }
 }

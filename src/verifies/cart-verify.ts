@@ -8,7 +8,7 @@ export class CartVerify {
         this.cartPage = cartPage;
     }
 
-    public async verifyProductInCart(product: string, price: string, quantity: string): Promise<void> {
+    public async verifyProductInCart(product: string, price: number, quantity: number): Promise<void> {
         const isProductExist = await this.cartPage.isProductExisted(product);
         if (!isProductExist) {
             throw new Error(`Product with title "${product}" is not found in the cart.`);
@@ -17,11 +17,11 @@ export class CartVerify {
             const actualPrice = await this.cartPage.getProductPrice(product);
             const actualQuantity = await this.cartPage.getProductQuantity(product);
 
-            if (!actualPrice.trim().includes(price.trim())) {
+            if (!actualPrice.trim().includes(price.toString())) {
                 throw new Error(`Price mismatch for product "${product}". Expected: "${price}", Actual: "${actualPrice}"`);
             }
 
-            if (actualQuantity !== quantity) {
+            if (actualQuantity !== quantity.toString()) {
                 throw new Error(`Quantity mismatch for product "${product}". Expected: "${quantity}", Actual: "${actualQuantity}"`);
             }
             logger.info(`Product "${product}" is verified in the cart with correct price and quantity.`);       
