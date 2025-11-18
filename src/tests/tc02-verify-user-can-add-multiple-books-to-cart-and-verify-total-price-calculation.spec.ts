@@ -1,6 +1,5 @@
 import { test, expect } from '../fixtures/base-fixture';
 import { CartVerify } from '../verifies/cart-verify';
-import { product1, product2 } from '../data/book-info';
 
 test('verify user can ddd multiple books to cart and verify total price calculation', async ({ homePage, shopPage, cartPage }) => {
 
@@ -10,18 +9,22 @@ test('verify user can ddd multiple books to cart and verify total price calculat
   await homePage.selectHeaderMenu('Shop');
 
   //Step 2.	Add two random books (each from a different category) by clicking "ADD TO BASKET" button for each
-  await shopPage.selectFilterCategory(product1.category);
-  await shopPage.addProductToBasket([product1.name]);
+  const randomJsProduct = await shopPage.getRandomProductByCategory('JavaScript');
+  const randomJsProductPrice = await shopPage.getProductPriceByName(randomJsProduct);
+  await shopPage.addProductToBasket([randomJsProduct]);
 
-  await shopPage.selectFilterCategory(product2.category);
-  await shopPage.addProductToBasket([product2.name]);
+
+  const randomHtmlProduct = await shopPage.getRandomProductByCategory('HTML');
+  const randomHtmlProductPrice = await shopPage.getProductPriceByName(randomHtmlProduct);
+  await shopPage.addProductToBasket([randomHtmlProduct]);
 
   //Step 3.	Verify that the cart icon displays the correct number of items (2).
   expect(await shopPage.isCartQuantityEqualTo('2 items')).toBeTruthy();
 
   //Step 4.	Verify that the cart subtotal equals the sum of the added book prices.
-  const expectedSubtotal = product1.price + product2.price;
+  const expectedSubtotal = randomJsProductPrice + randomHtmlProductPrice;
   expect(await shopPage.isCartSubTotalEqualTo(expectedSubtotal)).toBeTruthy();
+  console.log('Expected Subtotal:', expectedSubtotal);
 
   //Step 5.	Click on the "Cart" icon in the header to open the Cart page.
   await shopPage.goToCart();
@@ -29,8 +32,8 @@ test('verify user can ddd multiple books to cart and verify total price calculat
   //Step 6.	Verify that all added books appear in the cart with correct details (Product Name, Unit Price, Quantity).
   const cartVerify = new CartVerify(cartPage);
 
-  cartVerify.verifyProductInCart(product1.name, product1.price, product1.quantity);
-  cartVerify.verifyProductInCart(product2.name, product2.price, product2.quantity);
+  cartVerify.verifyProductInCart(randomJsProduct, randomJsProductPrice, 1);
+  cartVerify.verifyProductInCart(randomHtmlProduct, randomHtmlProductPrice, 1);
 
   //Step 7.	Verify price calculations:
   //VP1. Subtotal = Sum of all item prices × quantity.
@@ -43,5 +46,7 @@ test('verify user can ddd multiple books to cart and verify total price calculat
 
   //VP3. Total = Subtotal + Tax (if any).
   expect(await cartPage.getCartTotal()).toBe(expectedSubtotal + tax);
+  console.log('Cart Tax:', tax);
+  console.log('Cart Total:', await cartPage.getCartTotal());
 
 });
